@@ -18,3 +18,6 @@ COPY . /app/backend
 EXPOSE 8000
 #RUN python manage.py migrate
 #RUN python manage.py makemigrations
+
+# ✅ Add this to start the Django server
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
