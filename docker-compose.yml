@@ -24,7 +24,7 @@ services:
     env_file:
       - ".env"
     depends_on:
-      - db
+      - mongodb
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/admin || exit 1"]
@@ -35,16 +35,17 @@ services:
     networks:
       - notes-app-nw
 
-  db:
-    image: mysql
-    container_name: "db_cont"
+  mongodb:
+    image: mongo
+    container_name: "mongodb_cont"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=test_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=test_db
     volumes:
-      - ./data/mysql/db:/var/lib/mysql
+      - ./data/mongodb:/data/db
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
